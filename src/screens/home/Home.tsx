@@ -1,9 +1,11 @@
-import { DisplayBoard } from "./_components/DisplayBoard";
+import { ContentList } from "./_components/ContentList";
+import { Header } from "./_components/Header";
 
 export const Home = () => {
   return (
     <>
-      <DisplayBoard />
+      <Header />
+      <ContentList />
     </>
   );
 };

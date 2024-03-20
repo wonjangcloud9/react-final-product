@@ -1,4 +1,4 @@
-// import Swiper core and required modules
+/* trunk-ignore-all(prettier) */
 import {
   Navigation,
   Scrollbar,
@@ -22,6 +22,8 @@ import { IAPIResponse, getPopular, makeBgPath } from "../../../api";
 import { IMovie } from "../../../api";
 import { RightIcon } from "../../../components/right-icon";
 
+const SWIPER_DELAY = 2.5 * 1000;
+
 export const DisplayBoard = () => {
   const { isLoading, error, data } = useQuery<IAPIResponse>(
     ["allCharacters"],
@@ -41,7 +43,7 @@ export const DisplayBoard = () => {
     <Swiper
       // install Swiper modules
       modules={[Navigation, Scrollbar, A11y, Autoplay, EffectFade]}
-      autoplay={{ delay: 2500, disableOnInteraction: false }}
+      autoplay={{ delay: SWIPER_DELAY, disableOnInteraction: false }}
       spaceBetween={0}
       slidesPerView={1}
       effect="fade"
@@ -54,6 +56,7 @@ export const DisplayBoard = () => {
         width: "100%",
         minHeight: "300px",
         maxHeight: "500px",
+        backgroundColor: "rgba(0, 0, 0)",
       }}
     >
       {data?.results.slice(1, 6).map((movie: IMovie, index) => (
