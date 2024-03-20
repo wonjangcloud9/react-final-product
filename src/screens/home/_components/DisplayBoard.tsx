@@ -15,6 +15,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
+import "./DisplayBoard.css";
+
 import { useQuery } from "@tanstack/react-query";
 import { IAPIResponse, getPopular, makeBgPath } from "../../../api";
 import { IMovie } from "../../../api";
@@ -126,7 +128,8 @@ const SwiperSkeleton = () => {
     <div
       style={{
         width: "100%",
-        height: "300px",
+        minHeight: "300px",
+        maxHeight: "500px",
         backgroundColor: "rgba(0, 0, 0, 0.1)",
       }}
     ></div>
