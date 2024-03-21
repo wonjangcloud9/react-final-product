@@ -32,6 +32,28 @@ const Card = styled(motion.div)`
   align-items: center;
   justify-content: center;
   gap: 20px;
+  border: none;
+  background-color: black;
+  cursor: pointer;
+`;
+
+const CardImage = styled(motion.img)`
+  width: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  border: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+`;
+
+const CardTitle = styled.div`
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 20px;
+  text-align: center;
 `;
 
 export const ContentList = () => {
@@ -58,12 +80,17 @@ export const ContentList = () => {
           transition={{ duration: 1 }}
         >
           {data.results.map((movie) => (
-            <Card key={movie.id}>
-              <img
+            <Card
+              key={movie.id}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <CardImage
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
-                style={{ width: "100%" }}
               />
+              <CardTitle>{movie.title}</CardTitle>
             </Card>
           ))}
         </CardContainer>
