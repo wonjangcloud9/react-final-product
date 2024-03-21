@@ -42,10 +42,6 @@ const CardImage = styled(motion.img)`
   object-fit: cover;
   border-radius: 20px;
   border: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 `;
 
 const CardTitle = styled.div`
@@ -72,7 +68,6 @@ export const ContentList = () => {
   }
   return (
     <>
-      <Category />
       <Container>
         <CardContainer
           initial={{ opacity: 0 }}
