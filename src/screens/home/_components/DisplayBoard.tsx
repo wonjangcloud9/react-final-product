@@ -96,8 +96,8 @@ export const DisplayBoard = () => {
       navigation
       flipEffect={{ slideShadows: true }}
       scrollbar={{ draggable: true }}
-      onSwiper={(swiper) => console.log(swiper)}
-      onSlideChange={() => console.log("slide change")}
+      // onSwiper={(swiper) => console.log(swiper)}
+      // onSlideChange={() => console.log("slide change")}
       style={{
         width: "100%",
         minHeight: "300px",

@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { IAPIResponse, getNowPlaying } from "../../../api";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
+import { useParams, useNavigate } from "react-router-dom";
+import { Detail } from "../../detail/Detail";
 
 const Container = styled.div`
   padding: 10px 20px;
@@ -102,10 +104,15 @@ const cardVariants = {
 };
 
 export const ContentList = () => {
+  const { id: movieId } = useParams();
+
+  const navigate = useNavigate();
+
   const { isLoading, error, data } = useQuery<IAPIResponse>(
     ["allCharacters"],
     getNowPlaying
   );
+
   if (
     isLoading ||
     !data ||
@@ -115,24 +122,52 @@ export const ContentList = () => {
   ) {
     return <SwiperSkeleton />;
   }
+
+  const onCardClick = (movieId: string) => {
+    navigate(`/${movieId}`);
+  };
+
   return (
     <>
       <Container>
-        <CardContainer
-          variants={cardContainerVariants}
-          initial="hidden"
-          animate="visible"
+        <AnimatePresence
+          initial={true}
+          onExitComplete={() => {
+            navigate("/");
+          }}
         >
-          {data.results.map((movie) => (
-            <Card key={movie.id} variants={cardVariants}>
-              <CardImage
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-              />
-              <CardTitle>{movie.title}</CardTitle>
-            </Card>
-          ))}
-        </CardContainer>
+          <CardContainer
+            variants={cardContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {data.results.map((movie) => (
+              <Card
+                key={movie.id + ""}
+                variants={cardVariants}
+                onClick={() => {
+                  onCardClick(movie.id + "");
+                }}
+              >
+                <CardImage
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={movie.title}
+                />
+                <CardTitle>{movie.title}</CardTitle>
+              </Card>
+            ))}
+          </CardContainer>
+        </AnimatePresence>
+        {movieId && (
+          <AnimatePresence
+            initial={true}
+            onExitComplete={() => {
+              navigate("/");
+            }}
+          >
+            <Detail key={movieId} />
+          </AnimatePresence>
+        )}
       </Container>
     </>
   );
