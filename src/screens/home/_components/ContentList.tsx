@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import { Detail } from "../../detail/Detail";
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   padding: 10px 20px;
   background-color: black;
 `;
@@ -54,7 +54,7 @@ const CardImage = styled(motion.img)`
   border: none;
 `;
 
-const CardTitle = styled.div`
+const CardTitle = styled(motion.div)`
   color: white;
   font-size: 20px;
   font-weight: 600;
@@ -127,23 +127,23 @@ export const ContentList = () => {
     navigate(`/${movieId}`);
   };
 
+  const closeModal = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       <Container>
-        <AnimatePresence
-          initial={true}
-          onExitComplete={() => {
-            navigate("/");
-          }}
+        <CardContainer
+          variants={cardContainerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <CardContainer
-            variants={cardContainerVariants}
-            initial="hidden"
-            animate="visible"
-          >
+          <AnimatePresence initial={false}>
             {data.results.map((movie) => (
               <Card
                 key={movie.id + ""}
+                layoutId={movie.id + ""}
                 variants={cardVariants}
                 onClick={() => {
                   onCardClick(movie.id + "");
@@ -156,18 +156,10 @@ export const ContentList = () => {
                 <CardTitle>{movie.title}</CardTitle>
               </Card>
             ))}
-          </CardContainer>
-        </AnimatePresence>
-        {movieId && (
-          <AnimatePresence
-            initial={true}
-            onExitComplete={() => {
-              navigate("/");
-            }}
-          >
-            <Detail key={movieId} />
           </AnimatePresence>
-        )}
+        </CardContainer>
+
+        {movieId && <Detail />}
       </Container>
     </>
   );
