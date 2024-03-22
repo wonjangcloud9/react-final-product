@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Category } from "./Category";
 import { IAPIResponse, getNowPlaying } from "../../../api";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
 const Container = styled.div`
-  padding: 20px;
+  padding: 10px 20px;
   background-color: black;
 `;
 
@@ -14,7 +13,6 @@ const CardContainer = styled(motion.div)`
   grid-template-columns: repeat(3, 1fr);
   justify-content: center;
   gap: 50px;
-
   &::-webkit-scrollbar {
     display: none;
   }
@@ -34,7 +32,17 @@ const Card = styled(motion.div)`
   gap: 20px;
   border: none;
   background-color: black;
+  position: relative;
+  z-index: 1;
   cursor: pointer;
+  &:hover {
+    z-index: 2;
+    transform: scale(1.05);
+  }
+  &:active {
+    transform: scale(0.9);
+  }
+  transition: transform 0.3s, z-index 0s;
 `;
 
 const CardImage = styled(motion.img)`
@@ -51,6 +59,47 @@ const CardTitle = styled.div`
   padding: 20px;
   text-align: center;
 `;
+
+const cardContainerVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.5,
+    transition: {
+      type: "spring",
+      bounce: 0,
+      duration: 0.3,
+    },
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring",
+      bounce: 0,
+      duration: 0.7,
+      delayChildren: 0.1,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hover: {
+    scale: 1.05,
+    zIndex: 2,
+  },
+  tap: {
+    scale: 0.95,
+  },
+  hidden: {
+    opacity: 0,
+    transition: { duration: 0.2 },
+  },
+  visible: {
+    opacity: 1,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
+};
 
 export const ContentList = () => {
   const { isLoading, error, data } = useQuery<IAPIResponse>(
@@ -70,17 +119,12 @@ export const ContentList = () => {
     <>
       <Container>
         <CardContainer
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
+          variants={cardContainerVariants}
+          initial="hidden"
+          animate="visible"
         >
           {data.results.map((movie) => (
-            <Card
-              key={movie.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
+            <Card key={movie.id} variants={cardVariants}>
               <CardImage
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}

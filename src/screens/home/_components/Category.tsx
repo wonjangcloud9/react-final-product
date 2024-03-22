@@ -7,7 +7,7 @@ const Container = styled(motion.div)`
   display: flex;
   justify-content: start;
   background-color: black;
-  padding: 1rem;
+  padding: 1.5rem;
   gap: 1rem;
 `;
 
@@ -23,7 +23,7 @@ const CategoryItem = styled(motion.div)`
 `;
 
 const Ghost = styled(motion.div)`
-  height: 3px;
+  height: 1px;
   width: 20px;
   background-color: ${MAIN_COLOR};
   border-radius: 20px;
