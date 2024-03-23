@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MAIN_COLOR } from "../../../color";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { ContentList } from "./ContentList";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled(motion.div)`
   display: flex;
@@ -33,10 +33,12 @@ const Ghost = styled(motion.div)`
 `;
 
 export const Category = () => {
+  const navigate = useNavigate();
+
   const [selectedCategory, setSelectedCategory] = useState([
-    { name: "현재 상영중", selected: true },
+    { name: "인기 영화", selected: true },
     { name: "상영 예정", selected: false },
-    { name: "인기 영화", selected: false },
+    { name: "현재 상영중", selected: false },
   ]);
 
   const handleCategoryClick = (category: string) => {
@@ -49,6 +51,13 @@ export const Category = () => {
       return { ...item, selected: false };
     });
     setSelectedCategory(newCategory);
+    if (category === "인기 영화") {
+      navigate("/");
+    } else if (category === "상영 예정") {
+      navigate("/coming-soon");
+    } else if (category === "현재 상영중") {
+      navigate("/now-playing");
+    }
   };
 
   return (
@@ -72,7 +81,6 @@ export const Category = () => {
           </CategoryItem>
         ))}
       </Container>
-      <ContentList selectedCategory={selectedCategory} />
     </>
   );
 };

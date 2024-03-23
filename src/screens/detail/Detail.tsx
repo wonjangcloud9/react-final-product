@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFetchMovie } from "../../hooks/useQueryMovie";
+import { useFetchData } from "../../hooks/useQueryMovie";
 import { makeBgPath, makeImagePath } from "../../api";
 
 const DetailContainer = styled(motion.div)`
@@ -96,9 +96,7 @@ export const Detail = ({ layoutId }: { layoutId: string }) => {
   const { id: movieId } = useParams();
   const navigate = useNavigate();
 
-  const { isLoading, hasError, hasData, data } = useFetchMovie(
-    movieId as string
-  );
+  const { isLoading, hasError, hasData, data } = useFetchData("movie", movieId);
 
   if (isLoading || !hasData || hasError || !data) {
     return (

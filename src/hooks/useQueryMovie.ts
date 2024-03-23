@@ -8,50 +8,51 @@ import {
   getPopular,
 } from "../api";
 
-export const useFetchNowPlaying = () => {
-  const { isLoading, error, data } = useQuery<IAPIResponse>(
-    ["nowPlaying"],
-    getNowPlaying
+export const useFetchData = (
+  type: "nowPlaying" | "popular" | "comingSoon" | "movie",
+  id?: string
+) => {
+  const queryKey = type === "movie" && id ? ["movie", id] : [type];
+
+  const getFunction = () => {
+    switch (type) {
+      case "nowPlaying":
+        return getNowPlaying;
+      case "popular":
+        return getPopular;
+      case "comingSoon":
+        return getComingSoon;
+      case "movie":
+        if (!id) {
+          throw new Error("Invalid id");
+        }
+        return () => getMovie(id);
+      default:
+        throw new Error("Invalid type");
+    }
+  };
+
+  const { isLoading, error, data } = useQuery<IAPIResponse & IMovieDetail>(
+    queryKey,
+    getFunction(),
+    {
+      enabled:
+        type === "nowPlaying" ||
+        type === "popular" ||
+        type === "comingSoon" ||
+        (type === "movie" && !!id),
+    }
   );
 
   const hasError = error != null;
-  const hasData = data && data.results && data.results.length > 0;
 
-  return { isLoading, hasError, hasData, data };
-};
+  let hasData = false as boolean | undefined;
 
-export const useFetchPopular = () => {
-  const { isLoading, error, data } = useQuery<IAPIResponse>(
-    ["popular"],
-    getPopular
-  );
-
-  const hasError = error != null;
-  const hasData = data && data.results && data.results.length > 0;
-
-  return { isLoading, hasError, hasData, data };
-};
-
-export const useFetchComingSoon = () => {
-  const { isLoading, error, data } = useQuery<IAPIResponse>(
-    ["comingSoon"],
-    getComingSoon
-  );
-
-  const hasError = error != null;
-  const hasData = data && data.results && data.results.length > 0;
-
-  return { isLoading, hasError, hasData, data };
-};
-
-export const useFetchMovie = (id: string) => {
-  const { isLoading, error, data } = useQuery<IMovieDetail>(
-    ["movie", id],
-    getMovie
-  );
-
-  const hasError = error != null;
-  const hasData = data && data && data.id === Number(id);
+  if (type === "movie") {
+    hasData = data && "id" in data && data.id === Number(id);
+  } else {
+    hasData = data && "results" in data && data.results.length > 0;
+  }
 
   return { isLoading, hasError, hasData, data };
 };

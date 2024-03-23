@@ -1,12 +1,9 @@
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Detail } from "../../detail/Detail";
-import {
-  useFetchComingSoon,
-  useFetchNowPlaying,
-  useFetchPopular,
-} from "../../../hooks/useQueryMovie";
+import { useFetchData } from "../../../hooks/useQueryMovie";
+
 import { Error404 } from "../../error/Error404";
 
 const Container = styled(motion.div)`
@@ -102,48 +99,33 @@ const cardVariants = {
   },
 };
 
-export const ContentList = ({
-  selectedCategory,
-}: {
-  selectedCategory: { name: string; selected: boolean }[];
-}) => {
-  const {
-    isLoading: isLoadingNP,
-    hasError: hasErrorNP,
-    hasData: hasDataNP,
-    data: dataNP,
-  } = useFetchNowPlaying();
-  const {
-    isLoading: isLoadingP,
-    hasError: hasErrorP,
-    hasData: hasDataP,
-    data: dataP,
-  } = useFetchPopular();
-  const {
-    isLoading: isLoadingC,
-    hasError: hasErrorC,
-    hasData: hasDataC,
-    data: dataC,
-  } = useFetchComingSoon();
-
+export const ContentList = () => {
   const { id: movieId } = useParams();
+  const location = useLocation();
+  const path = location.pathname.split("/")[1];
 
   const navigate = useNavigate();
 
-  if (isLoadingNP || isLoadingP || isLoadingC) {
+  const { isLoading, hasError, hasData, data } = useFetchData(
+    path === "now-playing"
+      ? "nowPlaying"
+      : path === "popular"
+      ? "popular"
+      : path === "coming-soon"
+      ? "comingSoon"
+      : "popular"
+  );
+
+  if (isLoading || !hasData || !data) {
     return <ContentListSkeleton />;
   }
 
-  if (hasErrorNP || hasErrorP || hasErrorC) {
-    return <Error404 />;
-  }
-
-  if (!hasDataNP || !hasDataP || !hasDataC) {
+  if (hasError) {
     return <Error404 />;
   }
 
   const onCardClick = (id: string) => {
-    navigate(`/${id}`);
+    navigate(`${location.pathname === "/" ? "" : location.pathname}/${id}`);
   };
 
   return (
@@ -155,58 +137,22 @@ export const ContentList = ({
           animate="visible"
         >
           <AnimatePresence initial={false}>
-            {selectedCategory && dataNP && selectedCategory[0].selected
-              ? dataNP.results.map((movie) => (
-                  <Card
-                    key={movie.id + ""}
-                    layoutId={movie.id + ""}
-                    variants={cardVariants}
-                    onClick={() => {
-                      onCardClick(movie.id + "");
-                    }}
-                  >
-                    <CardImage
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                    />
-                    <CardTitle>{movie.title}</CardTitle>
-                  </Card>
-                ))
-              : selectedCategory && dataP && selectedCategory[1].selected
-              ? dataP.results.map((movie) => (
-                  <Card
-                    key={movie.id + ""}
-                    layoutId={movie.id + ""}
-                    variants={cardVariants}
-                    onClick={() => {
-                      onCardClick(movie.id + "");
-                    }}
-                  >
-                    <CardImage
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                    />
-                    <CardTitle>{movie.title}</CardTitle>
-                  </Card>
-                ))
-              : selectedCategory && dataC && selectedCategory[2].selected
-              ? dataC.results.map((movie) => (
-                  <Card
-                    key={movie.id + ""}
-                    layoutId={movie.id + ""}
-                    variants={cardVariants}
-                    onClick={() => {
-                      onCardClick(movie.id + "");
-                    }}
-                  >
-                    <CardImage
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                    />
-                    <CardTitle>{movie.title}</CardTitle>
-                  </Card>
-                ))
-              : null}
+            {data.results.map((movie) => (
+              <Card
+                key={movie.id + ""}
+                layoutId={movie.id + ""}
+                variants={cardVariants}
+                onClick={() => {
+                  onCardClick(movie.id + "");
+                }}
+              >
+                <CardImage
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={movie.title}
+                />
+                <CardTitle>{movie.title}</CardTitle>
+              </Card>
+            ))}
           </AnimatePresence>
         </CardContainer>
 
