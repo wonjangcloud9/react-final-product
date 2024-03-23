@@ -64,8 +64,8 @@ const CotentContainer = styled.div`
 `;
 
 const ContentImage = styled.img`
-  width: 100px;
-  height: 150px;
+  width: 20%;
+  height: 100%;
   object-fit: cover;
   border-radius: 10px;
 `;
@@ -90,13 +90,6 @@ const ContentDescription = styled.p`
   margin-bottom: 1rem;
   overflow: hidden;
   color: grey;
-`;
-
-const GenresContainer = styled.div`
-  padding: 1rem;
-  color: white;
-  overflow-y: auto;
-  height: 50%;
 `;
 
 export const Detail = ({ layoutId }: { layoutId: string }) => {
@@ -140,35 +133,6 @@ export const Detail = ({ layoutId }: { layoutId: string }) => {
               <ContentDescription>{data.overview}</ContentDescription>
             </ContentDescriptionContainer>
           </CotentContainer>
-
-          <GenresContainer>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                marginBottom: "1rem",
-              }}
-            >
-              Genres
-            </h2>
-            <ul
-              style={{
-                listStyle: "none",
-                padding: 0,
-              }}
-            >
-              {data.genres.map((genre) => (
-                <li
-                  key={genre.id}
-                  style={{
-                    fontSize: "1rem",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {genre.name}
-                </li>
-              ))}
-            </ul>
-          </GenresContainer>
         </DetailContainer>
       </Backdrop>
     </AnimatePresence>
