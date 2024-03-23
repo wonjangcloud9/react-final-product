@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { IMovieDetail, getMovie } from "../../api";
+import { useFetchMovie } from "../../hooks/useQueryMovie";
 
 const DetailContainer = styled(motion.div)`
   position: fixed;
@@ -30,13 +29,14 @@ export const Detail = ({ layoutId }: { layoutId: string }) => {
   const { id: movieId } = useParams();
   const navigate = useNavigate();
 
-  const { isLoading, error, data } = useQuery<IMovieDetail>(
-    ["character", movieId],
-    getMovie
+  const { isLoading, hasError, hasData, data } = useFetchMovie(
+    movieId as string
   );
 
-  if (isLoading || !data || !data || error) {
-    return <DetailSkeleton />;
+  if (isLoading || !hasData || hasError || !data) {
+    return (
+      <DetailSkeleton layoutId={layoutId} closeModal={() => navigate(-1)} />
+    );
   }
 
   const closeModal = () => {
@@ -58,18 +58,16 @@ export const Detail = ({ layoutId }: { layoutId: string }) => {
   );
 };
 
-const DetailSkeleton = () => {
-  const navigate = useNavigate();
-
-  const closeModal = () => {
-    navigate(-1);
-  };
-
+const DetailSkeleton = ({
+  layoutId,
+  closeModal,
+}: {
+  layoutId: string;
+  closeModal: () => void;
+}) => {
   return (
     <Backdrop onClick={closeModal}>
-      <DetailContainer>
-        <div>Loading...</div>
-      </DetailContainer>
+      <DetailContainer layoutId={layoutId}></DetailContainer>
     </Backdrop>
   );
 };

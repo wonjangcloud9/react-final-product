@@ -1,9 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { IAPIResponse, getNowPlaying } from "../../../api";
-import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import { Detail } from "../../detail/Detail";
+import {
+  useFetchComingSoon,
+  useFetchNowPlaying,
+  useFetchPopular,
+} from "../../../hooks/useQueryMovie";
+import { Error404 } from "../../error/Error404";
 
 const Container = styled(motion.div)`
   padding: 10px 20px;
@@ -98,28 +102,48 @@ const cardVariants = {
   },
 };
 
-export const ContentList = () => {
+export const ContentList = ({
+  selectedCategory,
+}: {
+  selectedCategory: { name: string; selected: boolean }[];
+}) => {
+  const {
+    isLoading: isLoadingNP,
+    hasError: hasErrorNP,
+    hasData: hasDataNP,
+    data: dataNP,
+  } = useFetchNowPlaying();
+  const {
+    isLoading: isLoadingP,
+    hasError: hasErrorP,
+    hasData: hasDataP,
+    data: dataP,
+  } = useFetchPopular();
+  const {
+    isLoading: isLoadingC,
+    hasError: hasErrorC,
+    hasData: hasDataC,
+    data: dataC,
+  } = useFetchComingSoon();
+
   const { id: movieId } = useParams();
 
   const navigate = useNavigate();
 
-  const { isLoading, error, data } = useQuery<IAPIResponse>(
-    ["allCharacters"],
-    getNowPlaying
-  );
-
-  if (
-    isLoading ||
-    !data ||
-    !data.results ||
-    data.results.length === 0 ||
-    error
-  ) {
+  if (isLoadingNP || isLoadingP || isLoadingC) {
     return <ContentListSkeleton />;
   }
 
-  const onCardClick = (movieId: string) => {
-    navigate(`/${movieId}`);
+  if (hasErrorNP || hasErrorP || hasErrorC) {
+    return <Error404 />;
+  }
+
+  if (!hasDataNP || !hasDataP || !hasDataC) {
+    return <Error404 />;
+  }
+
+  const onCardClick = (id: string) => {
+    navigate(`/${id}`);
   };
 
   return (
@@ -130,23 +154,59 @@ export const ContentList = () => {
           initial="hidden"
           animate="visible"
         >
-          <AnimatePresence>
-            {data.results.map((movie) => (
-              <Card
-                key={movie.id + ""}
-                layoutId={movie.id + ""}
-                variants={cardVariants}
-                onClick={() => {
-                  onCardClick(movie.id + "");
-                }}
-              >
-                <CardImage
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                />
-                <CardTitle>{movie.title}</CardTitle>
-              </Card>
-            ))}
+          <AnimatePresence initial={false}>
+            {selectedCategory && dataNP && selectedCategory[0].selected
+              ? dataNP.results.map((movie) => (
+                  <Card
+                    key={movie.id + ""}
+                    layoutId={movie.id + ""}
+                    variants={cardVariants}
+                    onClick={() => {
+                      onCardClick(movie.id + "");
+                    }}
+                  >
+                    <CardImage
+                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                      alt={movie.title}
+                    />
+                    <CardTitle>{movie.title}</CardTitle>
+                  </Card>
+                ))
+              : selectedCategory && dataP && selectedCategory[1].selected
+              ? dataP.results.map((movie) => (
+                  <Card
+                    key={movie.id + ""}
+                    layoutId={movie.id + ""}
+                    variants={cardVariants}
+                    onClick={() => {
+                      onCardClick(movie.id + "");
+                    }}
+                  >
+                    <CardImage
+                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                      alt={movie.title}
+                    />
+                    <CardTitle>{movie.title}</CardTitle>
+                  </Card>
+                ))
+              : selectedCategory && dataC && selectedCategory[2].selected
+              ? dataC.results.map((movie) => (
+                  <Card
+                    key={movie.id + ""}
+                    layoutId={movie.id + ""}
+                    variants={cardVariants}
+                    onClick={() => {
+                      onCardClick(movie.id + "");
+                    }}
+                  >
+                    <CardImage
+                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                      alt={movie.title}
+                    />
+                    <CardTitle>{movie.title}</CardTitle>
+                  </Card>
+                ))
+              : null}
           </AnimatePresence>
         </CardContainer>
 

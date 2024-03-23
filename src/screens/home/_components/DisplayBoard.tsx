@@ -98,6 +98,8 @@ export const DisplayBoard = () => {
       navigation
       flipEffect={{ slideShadows: true }}
       scrollbar={{ draggable: true }}
+      // onSwiper={(swiper) => console.log(swiper)}
+      // onSlideChange={() => console.log("slide change")}
       style={{
         width: "100%",
         minHeight: "300px",
@@ -119,9 +121,7 @@ export const DisplayBoard = () => {
             <ContentFowardButton
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9 }}
-              onClick={() => {
-                navigate(`/${movie.id}`);
-              }}
+              onClick={() => navigate(`/${movie.id}`)}
             >
               보러가기
               <RightIcon />

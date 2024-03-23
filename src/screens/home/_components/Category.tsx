@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MAIN_COLOR } from "../../../color";
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { ContentList } from "./ContentList";
 
 const Container = styled(motion.div)`
   display: flex;
@@ -43,7 +44,6 @@ export const Category = () => {
       (item) => item.selected
     )?.name;
     if (category === selectedCategoryNow) return;
-    console.log("Hi");
     const newCategory = selectedCategory.map((item) => {
       if (item.name === category) return { ...item, selected: true };
       return { ...item, selected: false };
@@ -52,24 +52,27 @@ export const Category = () => {
   };
 
   return (
-    <Container>
-      {selectedCategory.map((category) => (
-        <CategoryItem
-          key={category.name}
-          selected={category.selected}
-          onClick={() => handleCategoryClick(category.name)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          layout
-        >
-          {category.name}
-          {category.selected && (
-            <Ghost layoutId="underline" transition={{ duration: 0.5 }}>
-              👻
-            </Ghost>
-          )}
-        </CategoryItem>
-      ))}
-    </Container>
+    <>
+      <Container>
+        {selectedCategory.map((category) => (
+          <CategoryItem
+            key={category.name}
+            selected={category.selected}
+            onClick={() => handleCategoryClick(category.name)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            layout
+          >
+            {category.name}
+            {category.selected && (
+              <Ghost layoutId="underline" transition={{ duration: 0.5 }}>
+                👻
+              </Ghost>
+            )}
+          </CategoryItem>
+        ))}
+      </Container>
+      <ContentList selectedCategory={selectedCategory} />
+    </>
   );
 };
