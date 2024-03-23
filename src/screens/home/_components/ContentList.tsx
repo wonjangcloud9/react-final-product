@@ -117,7 +117,7 @@ export const ContentList = () => {
   );
 
   if (isLoading || !hasData || !data) {
-    return <ContentListSkeleton />;
+    return <ContentListSkeleton id={movieId + ""} />;
   }
 
   if (hasError) {
@@ -136,7 +136,7 @@ export const ContentList = () => {
           initial="hidden"
           animate="visible"
         >
-          <AnimatePresence initial={false}>
+          <AnimatePresence>
             {data.results.map((movie) => (
               <Card
                 key={movie.id + ""}
@@ -162,12 +162,12 @@ export const ContentList = () => {
   );
 };
 
-const ContentListSkeleton = () => {
+const ContentListSkeleton = ({ id }: { id: string }) => {
   return (
     <Container>
       <CardContainer>
         {[...Array(10)].map((_, index) => (
-          <Card key={index}>
+          <Card key={index} layoutId={id + ""} variants={cardVariants}>
             <img
               src="https://via.placeholder.com/750"
               alt="placeholder"
