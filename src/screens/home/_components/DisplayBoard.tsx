@@ -18,6 +18,7 @@ import "swiper/css/scrollbar";
 import "./DisplayBoard.css";
 
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { IAPIResponse, getPopular, makeBgPath } from "../../../api";
 import { IMovie } from "../../../api";
 import { RightIcon } from "../../../components/right-icon";
@@ -72,6 +73,7 @@ const ContentFowardButton = styled(motion.div)`
 const SWIPER_DELAY = 2.5 * 1000;
 
 export const DisplayBoard = () => {
+  const navigate = useNavigate();
   const { isLoading, error, data } = useQuery<IAPIResponse>(
     ["allCharacters"],
     getPopular
@@ -96,8 +98,6 @@ export const DisplayBoard = () => {
       navigation
       flipEffect={{ slideShadows: true }}
       scrollbar={{ draggable: true }}
-      // onSwiper={(swiper) => console.log(swiper)}
-      // onSlideChange={() => console.log("slide change")}
       style={{
         width: "100%",
         minHeight: "300px",
@@ -105,7 +105,7 @@ export const DisplayBoard = () => {
         backgroundColor: "rgba(0, 0, 0)",
       }}
     >
-      {data?.results.slice(1, 6).map((movie: IMovie, index) => (
+      {data?.results.slice(0, 6).map((movie: IMovie, index) => (
         <SwiperSlide key={index}>
           <BackgroundImage
             src={makeBgPath(movie.backdrop_path)}
@@ -119,6 +119,9 @@ export const DisplayBoard = () => {
             <ContentFowardButton
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9 }}
+              onClick={() => {
+                navigate(`/${movie.id}`);
+              }}
             >
               보러가기
               <RightIcon />

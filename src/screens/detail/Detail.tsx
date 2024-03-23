@@ -1,16 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { IMovieDetail, getMovie } from "../../api";
 
 const DetailContainer = styled(motion.div)`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 70vw;
-  height: 50vh;
+  height: 80vh;
   background-color: red;
   z-index: 10;
+  border-radius: 20px;
 `;
 
 const Backdrop = styled(motion.div)`
@@ -26,9 +26,18 @@ const Backdrop = styled(motion.div)`
   align-items: center;
 `;
 
-export const Detail = () => {
-  const { movieId } = useParams();
+export const Detail = ({ layoutId }: { layoutId: string }) => {
+  const { id: movieId } = useParams();
   const navigate = useNavigate();
+
+  const { isLoading, error, data } = useQuery<IMovieDetail>(
+    ["character", movieId],
+    getMovie
+  );
+
+  if (isLoading || !data || !data || error) {
+    return <DetailSkeleton />;
+  }
 
   const closeModal = () => {
     navigate(-1);
@@ -38,10 +47,29 @@ export const Detail = () => {
     <AnimatePresence>
       <Backdrop onClick={closeModal}>
         <DetailContainer
-          layoutId={movieId + ""}
+          layoutId={layoutId}
           onClick={(e) => e.stopPropagation()}
-        ></DetailContainer>
+        >
+          <div>{data.title}</div>
+          <div>{data.overview}</div>
+        </DetailContainer>
       </Backdrop>
     </AnimatePresence>
+  );
+};
+
+const DetailSkeleton = () => {
+  const navigate = useNavigate();
+
+  const closeModal = () => {
+    navigate(-1);
+  };
+
+  return (
+    <Backdrop onClick={closeModal}>
+      <DetailContainer>
+        <div>Loading...</div>
+      </DetailContainer>
+    </Backdrop>
   );
 };

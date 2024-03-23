@@ -1,3 +1,5 @@
+import { QueryFunctionContext } from "@tanstack/react-query";
+
 const BASE_URL = "https://movies-api.nomadcoders.workers.dev";
 
 export function getPopular() {
@@ -12,7 +14,8 @@ export function getComingSoon() {
   return fetch(`${BASE_URL}/coming-soon`).then((r) => r.json());
 }
 
-export function getMovie(id: string) {
+export function getMovie({ queryKey }: QueryFunctionContext) {
+  const [, id] = queryKey;
   return fetch(`${BASE_URL}/movie?id=${id}`).then((r) => r.json());
 }
 

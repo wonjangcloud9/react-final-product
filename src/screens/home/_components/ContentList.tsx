@@ -66,11 +66,6 @@ const cardContainerVariants = {
   hidden: {
     opacity: 0,
     scale: 0.5,
-    transition: {
-      type: "spring",
-      bounce: 0,
-      duration: 0.3,
-    },
   },
   visible: {
     opacity: 1,
@@ -79,7 +74,7 @@ const cardContainerVariants = {
       type: "spring",
       bounce: 0,
       duration: 0.7,
-      delayChildren: 0.1,
+      delayChildren: 0.2,
       staggerChildren: 0.1,
     },
   },
@@ -95,7 +90,7 @@ const cardVariants = {
   },
   hidden: {
     opacity: 0,
-    transition: { duration: 0.2 },
+    transition: { duration: 0.4 },
   },
   visible: {
     opacity: 1,
@@ -120,15 +115,11 @@ export const ContentList = () => {
     data.results.length === 0 ||
     error
   ) {
-    return <SwiperSkeleton />;
+    return <ContentListSkeleton />;
   }
 
   const onCardClick = (movieId: string) => {
     navigate(`/${movieId}`);
-  };
-
-  const closeModal = () => {
-    navigate(-1);
   };
 
   return (
@@ -139,7 +130,7 @@ export const ContentList = () => {
           initial="hidden"
           animate="visible"
         >
-          <AnimatePresence initial={false}>
+          <AnimatePresence>
             {data.results.map((movie) => (
               <Card
                 key={movie.id + ""}
@@ -159,13 +150,13 @@ export const ContentList = () => {
           </AnimatePresence>
         </CardContainer>
 
-        {movieId && <Detail />}
+        {movieId && <Detail layoutId={movieId} />}
       </Container>
     </>
   );
 };
 
-const SwiperSkeleton = () => {
+const ContentListSkeleton = () => {
   return (
     <Container>
       <CardContainer>
