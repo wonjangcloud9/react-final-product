@@ -26,6 +26,79 @@ const Backdrop = styled(motion.div)`
   align-items: center;
 `;
 
+const XBtnContainer = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+const XBtn = styled.button`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+`;
+
+const BackImageContainer = styled.div`
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  border-radius: 20px;
+`;
+
+const BackImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  opacity: 0.5;
+`;
+
+const CotentContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+`;
+
+const ContentImage = styled.img`
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+`;
+
+const ContentDescriptionContainer = styled.div`
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  color: white;
+`;
+
+const ContentDescriptionTitle = styled.h1`
+  font-size: 2rem;
+  margin-bottom: 1rem;
+`;
+
+const ContentDescription = styled.p`
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  color: grey;
+`;
+
+const GenresContainer = styled.div`
+  padding: 1rem;
+  color: white;
+  overflow-y: auto;
+  height: 50%;
+`;
+
 export const Detail = ({ layoutId }: { layoutId: string }) => {
   const { id: movieId } = useParams();
   const navigate = useNavigate();
@@ -51,101 +124,24 @@ export const Detail = ({ layoutId }: { layoutId: string }) => {
           layoutId={layoutId}
           onClick={(e) => e.stopPropagation()}
         >
-          <div
-            style={{
-              position: "relative",
-              zIndex: 1,
-            }}
-            onClick={closeModal}
-          >
-            <button
-              style={{
-                position: "absolute",
-                top: "1rem",
-                right: "1rem",
-                color: "white",
-                backgroundColor: "transparent",
-                border: "none",
-                fontSize: "1.5rem",
-                cursor: "pointer",
-              }}
-            >
-              X
-            </button>
-          </div>
-          <div
-            style={{
-              width: "100%",
-              height: "50%",
-              overflow: "hidden",
-              borderRadius: "20px",
-            }}
-          >
-            <img
-              src={makeBgPath(data.backdrop_path)}
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                borderRadius: "20px",
-                opacity: 0.5,
-              }}
-              alt={data.title}
-            />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              padding: "1rem",
-              overflow: "hidden",
-              borderRadius: "20px",
-            }}
-          >
-            <img
+          <XBtnContainer onClick={closeModal}>
+            <XBtn>X</XBtn>
+          </XBtnContainer>
+          <BackImageContainer>
+            <BackImage src={makeBgPath(data.backdrop_path)} alt={data.title} />
+          </BackImageContainer>
+          <CotentContainer>
+            <ContentImage
               src={makeImagePath(data.poster_path)}
-              style={{
-                width: "100px",
-                height: "150px",
-                objectFit: "cover",
-                borderRadius: "10px",
-              }}
               alt={data.title}
             />
-            <div
-              style={{
-                padding: "1rem",
-                color: "white",
-                overflowY: "auto",
-              }}
-            >
-              <h1
-                style={{
-                  fontSize: "2rem",
-                  marginBottom: "1rem",
-                }}
-              >
-                {data.title}
-              </h1>
-              <p
-                style={{
-                  fontSize: "1rem",
-                  marginBottom: "1rem",
-                  color: "grey",
-                }}
-              >
-                {data.overview}
-              </p>
-            </div>
-          </div>
+            <ContentDescriptionContainer>
+              <ContentDescriptionTitle>{data.title}</ContentDescriptionTitle>
+              <ContentDescription>{data.overview}</ContentDescription>
+            </ContentDescriptionContainer>
+          </CotentContainer>
 
-          <div
-            style={{
-              padding: "1rem",
-              color: "white",
-              overflowY: "auto",
-              height: "50%",
-            }}
-          >
+          <GenresContainer>
             <h2
               style={{
                 fontSize: "1.5rem",
@@ -172,7 +168,7 @@ export const Detail = ({ layoutId }: { layoutId: string }) => {
                 </li>
               ))}
             </ul>
-          </div>
+          </GenresContainer>
         </DetailContainer>
       </Backdrop>
     </AnimatePresence>
