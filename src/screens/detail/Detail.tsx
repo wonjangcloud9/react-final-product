@@ -92,6 +92,17 @@ const ContentDescription = styled.p`
   color: grey;
 `;
 
+const ContentDescriptionMoreContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const ContentDescriptionMore = styled.p`
+  font-size: 1rem;
+  color: grey;
+`;
+
 export const Detail = ({ layoutId }: { layoutId: string }) => {
   const { id: movieId } = useParams();
   const navigate = useNavigate();
@@ -128,7 +139,26 @@ export const Detail = ({ layoutId }: { layoutId: string }) => {
             />
             <ContentDescriptionContainer>
               <ContentDescriptionTitle>{data.title}</ContentDescriptionTitle>
-              <ContentDescription>{data.overview}</ContentDescription>
+              <ContentDescription>
+                {data.overview.slice(0, 100)}... 더보기
+              </ContentDescription>
+              <ContentDescriptionMoreContainer>
+                <ContentDescriptionMore>
+                  개봉일: {data.release_date}
+                </ContentDescriptionMore>
+                <ContentDescriptionMore>
+                  평점: {data.vote_average}
+                </ContentDescriptionMore>
+                <ContentDescriptionMore>
+                  러닝타임: {data.runtime} 분
+                </ContentDescriptionMore>
+                <ContentDescriptionMore>
+                  예산: {data.budget.toLocaleString()} 달러
+                </ContentDescriptionMore>
+                <ContentDescriptionMore>
+                  수익: {data.revenue.toLocaleString()} 달러
+                </ContentDescriptionMore>
+              </ContentDescriptionMoreContainer>
             </ContentDescriptionContainer>
           </CotentContainer>
         </DetailContainer>
